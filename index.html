@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blind Typing Game</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1 class="app-title">⌨️ Blind Typing</h1>
+      <div class="header-actions">
+        <button id="reset-btn" class="btn btn--ghost btn--small" type="button">↺ Reset</button>
+        <button id="sound-toggle-btn" class="btn btn--ghost btn--small" type="button">🔊 Sound On</button>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <section id="screen-menu" class="screen active">
+        <p class="screen-lead">Type without looking at what you've typed. Trust your fingers.</p>
+        <div id="level-grid" class="level-grid"></div>
+        <p id="menu-stats" class="menu-stats"></p>
+      </section>
+
+      <section id="screen-intro" class="screen">
+        <div class="intro-card">
+          <h2 id="intro-title"></h2>
+          <p id="intro-description"></p>
+          <p id="intro-criteria" class="intro-criteria"></p>
+          <p id="intro-best" class="intro-best"></p>
+          <div class="btn-row">
+            <button id="intro-back-btn" class="btn btn--ghost" type="button">Back</button>
+            <button id="intro-start-btn" class="btn btn--primary" type="button">Start</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-session" class="screen">
+        <div class="session-card">
+          <div id="session-level-label" class="session-level-label"></div>
+          <div id="session-status" class="session-status"></div>
+          <div id="session-prompt" class="session-prompt"></div>
+          <div id="session-race" class="race-track"></div>
+          <button id="session-quit-btn" class="btn btn--ghost btn--small" type="button">Quit</button>
+        </div>
+      </section>
+
+      <section id="screen-results" class="screen">
+        <div class="results-card">
+          <div id="results-banner" class="results-banner"></div>
+          <div class="results-stats">
+            <div class="results-stat">
+              <span id="results-wpm" class="results-stat__value">0</span>
+              <span class="results-stat__label">WPM</span>
+            </div>
+            <div class="results-stat">
+              <span id="results-accuracy" class="results-stat__value">0%</span>
+              <span class="results-stat__label">Accuracy</span>
+            </div>
+          </div>
+          <div id="results-stars" class="results-stars"></div>
+          <p id="results-best" class="results-best">New Best!</p>
+          <div class="btn-row">
+            <button id="results-menu-btn" class="btn btn--ghost" type="button">Levels</button>
+            <button id="results-retry-btn" class="btn btn--secondary" type="button">Retry</button>
+            <button id="results-next-btn" class="btn btn--primary" type="button">Next Level</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Captures keystrokes off-screen; value is cleared after every keystroke so nothing typed is ever visible. -->
+    <input id="hidden-input" class="hidden-input" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-hidden="true" tabindex="-1" />
+
+    <!-- Full-screen layer for countdowns and level-pass celebrations. -->
+    <div id="fx-overlay" class="fx-overlay"></div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/levels.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/race.js"></script>
+  <script src="js/fx.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
