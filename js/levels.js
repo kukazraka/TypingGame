@@ -23,7 +23,9 @@ window.TG.LEVELS = [
     description: "Real words, still on the home row.",
     type: "words",
     drills: [
-      "dad fall ask lad sad glad"
+      "dad fall ask lad sad glad",
+      "gas lads flag half glass",
+      "sash dash flask salad halls"
     ],
     passCriteria: { minAccuracy: 90, minWpm: 12 },
     raceTheme: { key: "bike", label: "Park Ride", playerIcon: "🚴", rivalIcon: "🚴‍♀️", finishIcon: "🏁" }
@@ -36,7 +38,9 @@ window.TG.LEVELS = [
     type: "chars",
     drills: [
       "qwer tyui op qwer tyui",
-      "wet quip your true riot"
+      "wet quip your true riot",
+      "we require quiet updates",
+      "pretty proud tulips prosper"
     ],
     passCriteria: { minAccuracy: 88, minWpm: 12 },
     raceTheme: { key: "horse", label: "Derby Dash", playerIcon: "🐎", rivalIcon: "🐴", finishIcon: "🏁" }
@@ -49,7 +53,9 @@ window.TG.LEVELS = [
     type: "chars",
     drills: [
       "zxcv bnm, zxcv bnm,",
-      "mix zeal calm brave zoo"
+      "mix zeal calm brave zoo",
+      "zebras vex bold nomads",
+      "many zebras can move boxes"
     ],
     passCriteria: { minAccuracy: 88, minWpm: 12 },
     raceTheme: { key: "boat", label: "Harbor Sprint", playerIcon: "🚤", rivalIcon: "⛵", finishIcon: "🏁" }
@@ -61,7 +67,9 @@ window.TG.LEVELS = [
     description: "Every letter, one classic sentence.",
     type: "chars",
     drills: [
-      "the quick brown fox jumps over the lazy dog"
+      "the quick brown fox jumps over the lazy dog",
+      "pack my box with five dozen liquor jugs",
+      "how vexingly quick daft zebras jump"
     ],
     passCriteria: { minAccuracy: 85, minWpm: 15 },
     raceTheme: { key: "jet", label: "Sky Chase", playerIcon: "✈️", rivalIcon: "🛩️", finishIcon: "🏁" }
@@ -73,7 +81,8 @@ window.TG.LEVELS = [
     description: "The words you'll type most often.",
     type: "words",
     drills: [
-      "the be to of and a in that have I it for not on with he as you do"
+      "the be to of and a in that have I it for not on with he as you do",
+      "at this but his by from they we say her she or an will my one all"
     ],
     passCriteria: { minAccuracy: 88, minWpm: 18 },
     raceTheme: { key: "runner", label: "Track Sprint", playerIcon: "🏃", rivalIcon: "🏃‍♀️", finishIcon: "🏁" }
@@ -86,7 +95,9 @@ window.TG.LEVELS = [
     type: "sentences",
     drills: [
       "She sells seashells by the seashore.",
-      "Practice makes progress, not perfection."
+      "Practice makes progress, not perfection.",
+      "The quick learner types with calm, steady hands.",
+      "Look up, not down; your fingers know the way."
     ],
     passCriteria: { minAccuracy: 90, minWpm: 20 },
     raceTheme: { key: "skate", label: "Street Roll", playerIcon: "🛹", rivalIcon: "🛼", finishIcon: "🏁" }
@@ -99,7 +110,9 @@ window.TG.LEVELS = [
     type: "chars",
     drills: [
       "Order #4529: 12 items @ $3.75 each, total $45.00!",
-      "Is it 50% off, or 15%?"
+      "Is it 50% off, or 15%?",
+      "Call 555-0192 by 9:30, or email sales@shop.co!",
+      "Save 25% today & 10% tomorrow (limited time)."
     ],
     passCriteria: { minAccuracy: 85, minWpm: 18 },
     raceTheme: { key: "rocket", label: "Orbit Run", playerIcon: "🚀", rivalIcon: "🛸", finishIcon: "🏁" }
@@ -112,7 +125,8 @@ window.TG.LEVELS = [
     type: "sentences",
     drills: [
       "In 2024, Dr. Alvarez shipped 3 releases — each one faster, safer, and (frankly) better than the last!",
-      "\"Can you believe it?\" she asked, typing at 87 WPM without a single glance at her hands."
+      "\"Can you believe it?\" she asked, typing at 87 WPM without a single glance at her hands.",
+      "Meanwhile, 4 out of 5 experts agree: looking at the keyboard costs you 20% of your speed (at least)."
     ],
     passCriteria: { minAccuracy: 85, minWpm: 22 },
     raceTheme: { key: "moto", label: "Highway Run", playerIcon: "🏍️", rivalIcon: "🛵", finishIcon: "🏁" }
@@ -132,7 +146,10 @@ window.TG.LEVELS = [
       "the early bird catches the worm but the second mouse gets the cheese",
       "typing without looking builds real muscle memory",
       "focus on accuracy first and speed will follow",
-      "keep your fingers on the home row at all times"
+      "keep your fingers on the home row at all times",
+      "great typists trust their hands more than their eyes",
+      "every mistake is just a detour on the road to speed",
+      "smooth is steady and steady becomes fast"
     ],
     passCriteria: { minAccuracy: 90, minWpm: 30 },
     raceTheme: { key: "f1", label: "Grand Prix", playerIcon: "🏎️", rivalIcon: "🚗", finishIcon: "🏆" }
