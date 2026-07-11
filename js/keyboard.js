@@ -213,7 +213,8 @@ window.TG = window.TG || {};
     const keyY = entry.el.offsetTop + entry.el.offsetHeight / 2;
     entry.finger.split(" ").forEach((fid) => {
       const f = fingerEls[fid];
-      const a = anchors[fid];
+      let a = anchors[fid];
+      if (!a && ensureLayout()) a = anchors[fid]; // layout may have just become measurable
       if (!f || !a) return;
       // Thumbs already rest on the space bar; they press in place.
       const dx = fid[1] === "t" ? 0 : keyX - a.x;
