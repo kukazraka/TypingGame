@@ -150,7 +150,7 @@ window.TG = window.TG || {};
     el.sessionLevelLabel.textContent = `Level ${currentLevel.order} · ${currentLevel.title}`;
     el.sessionStatus.textContent = "Get ready…";
     el.sessionPrompt.innerHTML = "";
-    currentRace = TG.race.createRace(el.sessionRace, currentLevel);
+    currentRace = TG.minigames.create(el.sessionRace, currentLevel);
 
     TG.fx.countdown(createAndStartEngineSession);
   }

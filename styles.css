@@ -382,6 +382,350 @@ body {
 .race-track--moto { background: linear-gradient(180deg, #33291a, #251c11); }
 .race-track--f1 { background: linear-gradient(180deg, #3a1414, #240d0d); }
 
+/* Mini-game: falling letters (levels 3-4) */
+
+.fall-track {
+  background: linear-gradient(180deg, #1c2e4a, #16223a);
+}
+
+.fall-sky {
+  position: relative;
+  height: 130px;
+}
+
+.fall-chip {
+  position: absolute;
+  min-width: 26px;
+  padding: 3px 6px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  background: #2c3a58;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: top 180ms ease-out, left 180ms ease-out, opacity 180ms ease-out;
+}
+
+.fall-chip--next {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 8px rgba(124, 157, 255, 0.4);
+}
+
+.fall-chip--space {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.fall-chip--zap {
+  background: var(--color-success);
+  color: #10121c;
+  animation: fall-zap 320ms ease-out forwards;
+}
+
+.fall-chip--miss {
+  background: var(--color-error);
+  color: #10121c;
+  animation: fall-zap 320ms ease-out forwards;
+}
+
+@keyframes fall-zap {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.7) translateY(14px); opacity: 0; }
+}
+
+.fall-catcher {
+  position: relative;
+  display: inline-block;
+  font-size: 1.7rem;
+  line-height: 1;
+  margin-top: 2px;
+  left: 12%;
+  transition: left 160ms ease-out;
+}
+
+.fall-catcher--catch {
+  animation: fall-catch 220ms ease-out;
+}
+
+.fall-catcher--shake {
+  animation: mg-shake 260ms ease-out;
+}
+
+@keyframes mg-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px) rotate(-6deg); }
+  75% { transform: translateX(4px) rotate(6deg); }
+}
+
+@keyframes fall-catch {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+.fall-meter {
+  position: relative;
+  height: 6px;
+  margin-top: 8px;
+  border-radius: 3px;
+  background: var(--border);
+  overflow: visible;
+}
+
+.fall-meter__fill {
+  height: 100%;
+  width: 0;
+  border-radius: 3px;
+  background: var(--color-success);
+  transition: width 200ms linear;
+}
+
+.fall-meter__rival {
+  position: absolute;
+  top: -3px;
+  left: 0;
+  width: 3px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--color-error);
+  transition: left 200ms linear;
+}
+
+/* Mini-game: balloon climb (levels 5-6) */
+
+.climb-track {
+  background: linear-gradient(180deg, #123047, #1c2e4a);
+}
+
+.climb-sky {
+  position: relative;
+  height: 170px;
+  overflow: hidden;
+}
+
+.climb-finish {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.2rem;
+}
+
+.climb-cloud {
+  position: absolute;
+  font-size: 1.4rem;
+  opacity: 0.5;
+  animation: climb-drift 7s ease-in-out infinite alternate;
+}
+
+.climb-cloud--a { top: 30%; left: 12%; }
+.climb-cloud--b { top: 55%; left: 74%; animation-delay: -3.5s; }
+
+@keyframes climb-drift {
+  from { transform: translateX(0); }
+  to { transform: translateX(26px); }
+}
+
+.climb-actor {
+  position: absolute;
+  bottom: 0;
+  font-size: 1.9rem;
+  line-height: 1;
+  transition: bottom 200ms linear;
+}
+
+.climb-actor--player { left: 32%; }
+.climb-actor--rival { left: 62%; opacity: 0.7; }
+
+.climb-actor--lift {
+  animation: climb-lift 240ms ease-out;
+}
+
+.climb-actor--wobble {
+  animation: mg-shake 260ms ease-out;
+}
+
+@keyframes climb-lift {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.25) translateY(-4px); }
+  100% { transform: scale(1); }
+}
+
+/* Mini-game: bridge builder (levels 7-8) */
+
+.bridge-track {
+  background: linear-gradient(180deg, #2b2b33, #1a1410);
+}
+
+.bridge-scene {
+  position: relative;
+  height: 120px;
+  overflow: hidden;
+}
+
+.bridge-cliff {
+  position: absolute;
+  bottom: 0;
+  width: 12%;
+  height: 55%;
+  background: #4a3826;
+  border-radius: 6px 6px 0 0;
+}
+
+.bridge-cliff--left { left: -2%; }
+.bridge-cliff--right { right: -2%; }
+
+.bridge-flag {
+  position: absolute;
+  top: -22px;
+  right: 12px;
+  font-size: 1.1rem;
+}
+
+.bridge-planks {
+  position: absolute;
+  bottom: 52%;
+  left: 9%;
+  right: 9%;
+  display: flex;
+  gap: 3px;
+}
+
+.bridge-plank {
+  flex: 1;
+  height: 7px;
+  border-radius: 2px;
+  background: #7a5c38;
+  opacity: 0;
+  transform: scaleY(0.2);
+  transition: opacity 150ms ease-out, transform 150ms ease-out;
+}
+
+.bridge-plank--on {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.bridge-player {
+  position: absolute;
+  bottom: 54%;
+  left: 6%;
+  font-size: 1.8rem;
+  line-height: 1;
+  transition: left 200ms linear;
+  z-index: 2;
+}
+
+.bridge-rival {
+  position: absolute;
+  top: 6px;
+  left: 6%;
+  font-size: 1.3rem;
+  line-height: 1;
+  opacity: 0.7;
+  transition: left 200ms linear;
+}
+
+.bridge-player--hop {
+  animation: bridge-hop 220ms ease-out;
+}
+
+.bridge-player--wobble {
+  animation: mg-shake 260ms ease-out;
+}
+
+@keyframes bridge-hop {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+  100% { transform: translateY(0); }
+}
+
+/* Mini-game: space run (levels 9-10) */
+
+.space-track {
+  background: #0a0a1c;
+}
+
+.space-field {
+  position: relative;
+  height: 120px;
+  overflow: hidden;
+  border-radius: 6px;
+  background-image:
+    radial-gradient(1.5px 1.5px at 20% 30%, #ffffffaa, transparent),
+    radial-gradient(1px 1px at 60% 70%, #ffffff88, transparent),
+    radial-gradient(1.5px 1.5px at 80% 20%, #ffffff99, transparent),
+    radial-gradient(1px 1px at 40% 80%, #ffffff77, transparent),
+    radial-gradient(1px 1px at 90% 60%, #ffffff88, transparent);
+  background-size: 220px 120px;
+  animation: space-scroll 9s linear infinite;
+}
+
+@keyframes space-scroll {
+  from { background-position: 0 0; }
+  to { background-position: -220px 0; }
+}
+
+.space-finish {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.7rem;
+}
+
+.space-actor {
+  position: absolute;
+  font-size: 1.9rem;
+  line-height: 1;
+  transition: left 200ms linear;
+}
+
+.space-actor--player {
+  top: 58%;
+  transform: rotate(45deg); /* 🚀 points up-right; rotate to fly rightward */
+}
+
+.space-actor--rival {
+  top: 16%;
+  opacity: 0.7;
+}
+
+.space-actor--thrust {
+  animation: space-thrust 200ms ease-out;
+}
+
+.space-actor--hit {
+  animation: space-hit 300ms ease-out;
+}
+
+@keyframes space-thrust {
+  0% { transform: rotate(45deg) scale(1); }
+  50% { transform: rotate(45deg) scale(1.22); filter: drop-shadow(0 0 8px var(--color-accent)); }
+  100% { transform: rotate(45deg) scale(1); }
+}
+
+@keyframes space-hit {
+  0%, 100% { transform: rotate(45deg) translateX(0); }
+  30% { transform: rotate(52deg) translateX(-4px); }
+  70% { transform: rotate(38deg) translateX(4px); }
+}
+
+.space-boom {
+  position: absolute;
+  top: 52%;
+  font-size: 1.6rem;
+  z-index: 2;
+  animation: fx-burst 450ms ease-out forwards;
+}
+
 /* Results screen */
 
 .results-card {

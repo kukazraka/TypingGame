@@ -14,7 +14,7 @@ window.TG.LEVELS = [
       "ask fall jak all sad"
     ],
     passCriteria: { minAccuracy: 90, minWpm: 10 },
-    raceTheme: { key: "car", label: "Street Race", playerIcon: "🏎️", rivalIcon: "🚙", finishIcon: "🏁" }
+    raceTheme: { key: "car", game: "race", label: "Street Race", playerIcon: "🏎️", rivalIcon: "🚙", finishIcon: "🏁" }
   },
   {
     id: "l2-home-row-words",
@@ -28,7 +28,7 @@ window.TG.LEVELS = [
       "sash dash flask salad halls"
     ],
     passCriteria: { minAccuracy: 90, minWpm: 12 },
-    raceTheme: { key: "bike", label: "Park Ride", playerIcon: "🚴", rivalIcon: "🚴‍♀️", finishIcon: "🏁" }
+    raceTheme: { key: "bike", game: "race", label: "Park Ride", playerIcon: "🚴", rivalIcon: "🚴‍♀️", finishIcon: "🏁" }
   },
   {
     id: "l3-top-row",
@@ -43,7 +43,7 @@ window.TG.LEVELS = [
       "pretty proud tulips prosper"
     ],
     passCriteria: { minAccuracy: 88, minWpm: 12 },
-    raceTheme: { key: "horse", label: "Derby Dash", playerIcon: "🐎", rivalIcon: "🐴", finishIcon: "🏁" }
+    raceTheme: { key: "horse", game: "fall", label: "Letter Drop", playerIcon: "🧺", rivalIcon: "☁️", finishIcon: "🏁" }
   },
   {
     id: "l4-bottom-row",
@@ -58,7 +58,7 @@ window.TG.LEVELS = [
       "many zebras can move boxes"
     ],
     passCriteria: { minAccuracy: 88, minWpm: 12 },
-    raceTheme: { key: "boat", label: "Harbor Sprint", playerIcon: "🚤", rivalIcon: "⛵", finishIcon: "🏁" }
+    raceTheme: { key: "boat", game: "fall", label: "Word Rain", playerIcon: "🪣", rivalIcon: "🌧️", finishIcon: "🏁" }
   },
   {
     id: "l5-full-alphabet",
@@ -72,7 +72,7 @@ window.TG.LEVELS = [
       "how vexingly quick daft zebras jump"
     ],
     passCriteria: { minAccuracy: 85, minWpm: 15 },
-    raceTheme: { key: "jet", label: "Sky Chase", playerIcon: "✈️", rivalIcon: "🛩️", finishIcon: "🏁" }
+    raceTheme: { key: "jet", game: "climb", label: "Balloon Ascent", playerIcon: "🎈", rivalIcon: "🪂", finishIcon: "🏁" }
   },
   {
     id: "l6-common-words",
@@ -85,7 +85,7 @@ window.TG.LEVELS = [
       "at this but his by from they we say her she or an will my one all"
     ],
     passCriteria: { minAccuracy: 88, minWpm: 18 },
-    raceTheme: { key: "runner", label: "Track Sprint", playerIcon: "🏃", rivalIcon: "🏃‍♀️", finishIcon: "🏁" }
+    raceTheme: { key: "runner", game: "climb", label: "Sky Sprint", playerIcon: "🚁", rivalIcon: "🎈", finishIcon: "🏁" }
   },
   {
     id: "l7-sentences",
@@ -100,7 +100,7 @@ window.TG.LEVELS = [
       "Look up, not down; your fingers know the way."
     ],
     passCriteria: { minAccuracy: 90, minWpm: 20 },
-    raceTheme: { key: "skate", label: "Street Roll", playerIcon: "🛹", rivalIcon: "🛼", finishIcon: "🏁" }
+    raceTheme: { key: "skate", game: "bridge", label: "Bridge Builder", playerIcon: "🚶", rivalIcon: "🐢", finishIcon: "🏁" }
   },
   {
     id: "l8-numbers-punctuation",
@@ -115,7 +115,7 @@ window.TG.LEVELS = [
       "Save 25% today & 10% tomorrow (limited time)."
     ],
     passCriteria: { minAccuracy: 85, minWpm: 18 },
-    raceTheme: { key: "rocket", label: "Orbit Run", playerIcon: "🚀", rivalIcon: "🛸", finishIcon: "🏁" }
+    raceTheme: { key: "rocket", game: "bridge", label: "Canyon Cross", playerIcon: "🏃", rivalIcon: "🚶", finishIcon: "🏁" }
   },
   {
     id: "l9-mixed-challenge",
@@ -129,7 +129,7 @@ window.TG.LEVELS = [
       "Meanwhile, 4 out of 5 experts agree: looking at the keyboard costs you 20% of your speed (at least)."
     ],
     passCriteria: { minAccuracy: 85, minWpm: 22 },
-    raceTheme: { key: "moto", label: "Highway Run", playerIcon: "🏍️", rivalIcon: "🛵", finishIcon: "🏁" }
+    raceTheme: { key: "moto", game: "space", label: "Asteroid Run", playerIcon: "🚀", rivalIcon: "🛸", finishIcon: "🪐" }
   },
   {
     id: "l10-speed-gauntlet",
@@ -152,6 +152,6 @@ window.TG.LEVELS = [
       "smooth is steady and steady becomes fast"
     ],
     passCriteria: { minAccuracy: 90, minWpm: 30 },
-    raceTheme: { key: "f1", label: "Grand Prix", playerIcon: "🏎️", rivalIcon: "🚗", finishIcon: "🏆" }
+    raceTheme: { key: "f1", game: "space", label: "Galaxy Grand Prix", playerIcon: "🚀", rivalIcon: "🛸", finishIcon: "🏆" }
   }
 ];
