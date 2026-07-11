@@ -51,8 +51,13 @@ window.TG = window.TG || {};
     "{": "[", "}": "]", "|": "\\", ":": ";", "\"": "'", "<": ",", ">": ".", "?": "/"
   };
 
+  // Per-row finger motion class: how the finger physically moves to reach
+  // a key in that row (from home position). Row order matches KEY_ROWS.
+  const ROW_MOTION = ["reach-far", "reach-up", "tap", "curl-down", "tap"];
+  const MOTION_CLASSES = ROW_MOTION.map((m) => `kb-finger--${m}`);
+
   let container = null;
-  const keyEls = {}; // id → { el, finger }
+  const keyEls = {}; // id → { el, finger, row }
   const fingerEls = {}; // finger id → el
   let activeEls = [];
 
@@ -96,7 +101,7 @@ window.TG = window.TG || {};
 
     const rowsEl = document.createElement("div");
     rowsEl.className = "kb-rows";
-    KEY_ROWS.forEach((row) => {
+    KEY_ROWS.forEach((row, rowIndex) => {
       const rowEl = document.createElement("div");
       rowEl.className = "kb-row";
       row.forEach(([id, label, finger, flex]) => {
@@ -106,7 +111,7 @@ window.TG = window.TG || {};
         if (id === "f" || id === "j") keyEl.classList.add("kb-key--home");
         keyEl.textContent = label;
         keyEl.style.flex = String(flex || 1);
-        if (finger) keyEls[id] = { el: keyEl, finger };
+        if (finger) keyEls[id] = { el: keyEl, finger, row: rowIndex };
         rowEl.appendChild(keyEl);
       });
       rowsEl.appendChild(rowEl);
@@ -122,7 +127,9 @@ window.TG = window.TG || {};
   }
 
   function clearActive() {
-    activeEls.forEach((elm) => elm.classList.remove("kb-key--active", "kb-finger--active"));
+    activeEls.forEach((elm) =>
+      elm.classList.remove("kb-key--active", "kb-finger--active", ...MOTION_CLASSES)
+    );
     activeEls = [];
   }
 
@@ -144,7 +151,10 @@ window.TG = window.TG || {};
     entry.finger.split(" ").forEach((f) => {
       const fingerEl = fingerEls[f];
       if (fingerEl) {
-        fingerEl.classList.add("kb-finger--active");
+        // Force a reflow so the motion animation restarts even when the
+        // same finger is used for consecutive characters.
+        void fingerEl.offsetWidth;
+        fingerEl.classList.add("kb-finger--active", `kb-finger--${ROW_MOTION[entry.row]}`);
         activeEls.push(fingerEl);
       }
     });

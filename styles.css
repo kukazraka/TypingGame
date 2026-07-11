@@ -870,12 +870,54 @@ body {
   background: var(--finger-color);
   border-color: var(--finger-color);
   box-shadow: 0 0 8px color-mix(in srgb, var(--finger-color) 70%, transparent);
-  animation: kb-finger-tap 0.9s ease-in-out infinite;
+  transform-origin: bottom center;
 }
 
-@keyframes kb-finger-tap {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+/* Motion simulation: the active finger acts out the reach for the target
+   key's row — stretch up for upper rows, tap in place on the home row,
+   curl down for the bottom row. */
+
+.kb-finger--reach-far {
+  animation: kb-reach-far 0.85s ease-in-out infinite;
+}
+
+.kb-finger--reach-up {
+  animation: kb-reach-up 0.85s ease-in-out infinite;
+}
+
+.kb-finger--tap {
+  animation: kb-tap 0.85s ease-in-out infinite;
+}
+
+.kb-finger--curl-down {
+  animation: kb-curl-down 0.85s ease-in-out infinite;
+}
+
+@keyframes kb-reach-far {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  35% { transform: translateY(-9px) scaleY(1.5); }
+  55% { transform: translateY(-9px) scaleY(1.42); } /* press at full stretch */
+  75% { transform: translateY(-9px) scaleY(1.5); }
+}
+
+@keyframes kb-reach-up {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  35% { transform: translateY(-5px) scaleY(1.28); }
+  55% { transform: translateY(-5px) scaleY(1.2); } /* press at stretch */
+  75% { transform: translateY(-5px) scaleY(1.28); }
+}
+
+@keyframes kb-tap {
+  0%, 100% { transform: scaleY(1); }
+  40% { transform: scaleY(0.78); } /* press straight down */
+  65% { transform: scaleY(1.04); }
+}
+
+@keyframes kb-curl-down {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  35% { transform: translateY(2px) scaleY(0.62); }
+  55% { transform: translateY(3px) scaleY(0.56); } /* press while curled */
+  75% { transform: translateY(2px) scaleY(0.62); }
 }
 
 .kb-hand__palm {
