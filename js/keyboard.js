@@ -1,7 +1,8 @@
 // On-screen US keyboard & finger guide: highlights the NEXT key to press
-// (derived from the visible target text) and which finger should press it.
-// It never displays what the player typed — only the upcoming target key —
-// so the blind-typing invariant holds.
+// (derived from the visible target text) and overlays semi-transparent hands
+// whose fingers rest on the home row; the guide finger physically travels to
+// the target key and presses it. It never displays what the player typed —
+// only the upcoming target key — so the blind-typing invariant holds.
 window.TG = window.TG || {};
 
 (function () {
@@ -51,15 +52,32 @@ window.TG = window.TG || {};
     "{": "[", "}": "]", "|": "\\", ":": ";", "\"": "'", "<": ",", ">": ".", "?": "/"
   };
 
-  // Per-row finger motion class: how the finger physically moves to reach
-  // a key in that row (from home position). Row order matches KEY_ROWS.
-  const ROW_MOTION = ["reach-far", "reach-up", "tap", "curl-down", "tap"];
-  const MOTION_CLASSES = ROW_MOTION.map((m) => `kb-finger--${m}`);
+  // One overlay finger per real finger. Its tip rests on `home`; `len`/`w`
+  // are sized for a 30px key height and scale with the real key size.
+  // `tilt` gives a natural splay; thumbs angle inward over the space bar
+  // (`homeShift` offsets them from the space bar's center).
+  const FINGERS = [
+    { id: "lp", type: "p", home: "a", len: 58, w: 14, tilt: -7 },
+    { id: "lr", type: "r", home: "s", len: 72, w: 15, tilt: -3 },
+    { id: "lm", type: "m", home: "d", len: 78, w: 15, tilt: 0 },
+    { id: "li", type: "i", home: "f", len: 72, w: 15, tilt: 3 },
+    { id: "lt", type: "t", home: "Space", len: 38, w: 16, tilt: 42, homeShift: -0.17 },
+    { id: "rt", type: "t", home: "Space", len: 38, w: 16, tilt: -42, homeShift: 0.17 },
+    { id: "ri", type: "i", home: "j", len: 72, w: 15, tilt: -3 },
+    { id: "rm", type: "m", home: "k", len: 78, w: 15, tilt: 0 },
+    { id: "rr", type: "r", home: "l", len: 72, w: 15, tilt: 3 },
+    { id: "rp", type: "p", home: ";", len: 58, w: 14, tilt: 7 }
+  ];
 
   let container = null;
-  const keyEls = {}; // id → { el, finger, row }
-  const fingerEls = {}; // finger id → el
-  let activeEls = [];
+  let handsLayer = null;
+  let layoutWidth = 0; // container width the current layout was computed for
+  const keyEls = {}; // id → { el, finger }
+  const fingerEls = {}; // finger id → { outer, body, def }
+  const palmEls = {}; // "l"/"r" → el
+  const anchors = {}; // finger id → { x, y } home/rest tip position
+  let activeKeyEls = [];
+  let activeFingers = [];
 
   function isVisible() {
     const raw = localStorage.getItem(VISIBLE_KEY);
@@ -72,27 +90,10 @@ window.TG = window.TG || {};
     } catch (err) {
       // ignore (private browsing)
     }
-    if (container) container.classList.toggle("kb-container--hidden", !visible);
-  }
-
-  function buildHand(side) {
-    const hand = document.createElement("div");
-    hand.className = `kb-hand kb-hand--${side}`;
-    const fingers = document.createElement("div");
-    fingers.className = "kb-hand__fingers";
-    const order = side === "left" ? ["p", "r", "m", "i", "t"] : ["t", "i", "m", "r", "p"];
-    order.forEach((f) => {
-      const fingerEl = document.createElement("div");
-      fingerEl.className = `kb-finger kb-finger--${f}`;
-      fingerEls[side[0] + f] = fingerEl;
-      fingers.appendChild(fingerEl);
-    });
-    const palm = document.createElement("div");
-    palm.className = "kb-hand__palm";
-    palm.textContent = side === "left" ? "L" : "R";
-    hand.appendChild(fingers);
-    hand.appendChild(palm);
-    return hand;
+    if (container) {
+      container.classList.toggle("kb-container--hidden", !visible);
+      if (visible) ensureLayout();
+    }
   }
 
   function build() {
@@ -101,7 +102,7 @@ window.TG = window.TG || {};
 
     const rowsEl = document.createElement("div");
     rowsEl.className = "kb-rows";
-    KEY_ROWS.forEach((row, rowIndex) => {
+    KEY_ROWS.forEach((row) => {
       const rowEl = document.createElement("div");
       rowEl.className = "kb-row";
       row.forEach(([id, label, finger, flex]) => {
@@ -111,26 +112,84 @@ window.TG = window.TG || {};
         if (id === "f" || id === "j") keyEl.classList.add("kb-key--home");
         keyEl.textContent = label;
         keyEl.style.flex = String(flex || 1);
-        if (finger) keyEls[id] = { el: keyEl, finger, row: rowIndex };
+        if (finger) keyEls[id] = { el: keyEl, finger };
         rowEl.appendChild(keyEl);
       });
       rowsEl.appendChild(rowEl);
     });
 
-    const handsEl = document.createElement("div");
-    handsEl.className = "kb-hands";
-    handsEl.appendChild(buildHand("left"));
-    handsEl.appendChild(buildHand("right"));
+    handsLayer = document.createElement("div");
+    handsLayer.className = "kb-hands-layer";
+    ["l", "r"].forEach((side) => {
+      const palm = document.createElement("div");
+      palm.className = "kb-palm";
+      palmEls[side] = palm;
+      handsLayer.appendChild(palm);
+    });
+    FINGERS.forEach((def) => {
+      const outer = document.createElement("div");
+      outer.className = `kb-finger kb-finger--type-${def.type}`;
+      const body = document.createElement("div");
+      body.className = "kb-finger__body";
+      outer.appendChild(body);
+      fingerEls[def.id] = { outer, body, def };
+      handsLayer.appendChild(outer);
+    });
 
     container.appendChild(rowsEl);
-    container.appendChild(handsEl);
+    container.appendChild(handsLayer);
+  }
+
+  // Position fingers/palms from the real key geometry. Runs lazily because
+  // offsets are 0 while the session screen is hidden (display: none).
+  function ensureLayout() {
+    if (!container) return false;
+    const width = container.offsetWidth;
+    if (!width) return false;
+    if (width === layoutWidth) return true;
+    layoutWidth = width;
+
+    const scale = keyEls.f.el.offsetHeight / 30;
+    FINGERS.forEach((def) => {
+      const home = keyEls[def.home].el;
+      const x = home.offsetLeft + home.offsetWidth * (0.5 + (def.homeShift || 0));
+      const y = home.offsetTop + home.offsetHeight / 2;
+      const w = def.w * scale;
+      anchors[def.id] = { x, y };
+      const f = fingerEls[def.id];
+      f.outer.style.left = `${x - w / 2}px`;
+      f.outer.style.top = `${y - 6 * scale}px`;
+      f.outer.style.width = `${w}px`;
+      f.outer.style.height = `${def.len * scale}px`;
+      if (!f.outer.classList.contains("kb-finger--active")) {
+        f.outer.style.transform = `rotate(${def.tilt}deg)`;
+      }
+    });
+
+    ["l", "r"].forEach((side) => {
+      const xPinky = anchors[side + "p"].x;
+      const xIndex = anchors[side + "i"].x;
+      const middle = fingerEls[side + "m"];
+      const palmW = Math.abs(xIndex - xPinky) + 40 * scale;
+      const palm = palmEls[side];
+      palm.style.left = `${(xPinky + xIndex) / 2 - palmW / 2}px`;
+      palm.style.top = `${anchors[side + "m"].y + middle.def.len * scale - 6 * scale}px`;
+      palm.style.width = `${palmW}px`;
+      palm.style.height = `${44 * scale}px`;
+    });
+
+    handsLayer.classList.add("kb-hands-layer--ready");
+    return true;
   }
 
   function clearActive() {
-    activeEls.forEach((elm) =>
-      elm.classList.remove("kb-key--active", "kb-finger--active", ...MOTION_CLASSES)
-    );
-    activeEls = [];
+    activeKeyEls.forEach((el) => el.classList.remove("kb-key--active"));
+    activeKeyEls = [];
+    activeFingers.forEach((f) => {
+      f.outer.classList.remove("kb-finger--active");
+      f.outer.style.transform = `rotate(${f.def.tilt}deg)`; // back to home rest
+    });
+    activeFingers = [];
   }
 
   // Resolve a target character to { keyId, needsShift }, or null if unmapped.
@@ -143,27 +202,33 @@ window.TG = window.TG || {};
     return null;
   }
 
+  // Light the key and send the owning finger's tip traveling to it.
   function activateKey(keyId) {
     const entry = keyEls[keyId];
     if (!entry) return;
     entry.el.classList.add("kb-key--active");
-    activeEls.push(entry.el);
-    entry.finger.split(" ").forEach((f) => {
-      const fingerEl = fingerEls[f];
-      if (fingerEl) {
-        // Force a reflow so the motion animation restarts even when the
-        // same finger is used for consecutive characters.
-        void fingerEl.offsetWidth;
-        fingerEl.classList.add("kb-finger--active", `kb-finger--${ROW_MOTION[entry.row]}`);
-        activeEls.push(fingerEl);
-      }
+    activeKeyEls.push(entry.el);
+
+    const keyX = entry.el.offsetLeft + entry.el.offsetWidth / 2;
+    const keyY = entry.el.offsetTop + entry.el.offsetHeight / 2;
+    entry.finger.split(" ").forEach((fid) => {
+      const f = fingerEls[fid];
+      const a = anchors[fid];
+      if (!f || !a) return;
+      // Thumbs already rest on the space bar; they press in place.
+      const dx = fid[1] === "t" ? 0 : keyX - a.x;
+      const dy = fid[1] === "t" ? 0 : keyY - a.y;
+      f.outer.style.transform = `translate(${dx}px, ${dy}px) rotate(${f.def.tilt}deg)`;
+      f.outer.classList.add("kb-finger--active");
+      activeFingers.push(f);
     });
   }
 
   // Highlight the key + finger for the next expected character (null clears).
-  // Shifted characters also light up the opposite-hand Shift key.
+  // Shifted characters also send the opposite-hand pinky to its Shift key.
   function setNext(ch) {
     if (!container) return;
+    ensureLayout();
     clearActive();
     if (!ch) return;
     const resolved = resolveChar(ch);
@@ -179,6 +244,10 @@ window.TG = window.TG || {};
     container = el;
     build();
     setVisible(isVisible());
+    window.addEventListener("resize", () => {
+      layoutWidth = 0; // force re-measure on next layout pass
+      ensureLayout();
+    });
   }
 
   window.TG.keyboard = { init, setNext, isVisible, setVisible };
