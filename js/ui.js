@@ -165,9 +165,6 @@ window.TG = window.TG || {};
     el.sessionStatus.textContent = "Get ready…";
     el.sessionPrompt.innerHTML = "";
     currentRace = TG.minigames.create(el.sessionRace, currentLevel);
-    // Session screen is visible now: lay out the hands overlay so they are
-    // resting on the home row during the countdown.
-    TG.keyboard.setNext(null);
 
     TG.fx.countdown(createAndStartEngineSession);
   }

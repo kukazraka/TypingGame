@@ -749,9 +749,7 @@ body {
 }
 
 .kb-container {
-  position: relative; /* anchor for the hands overlay */
   margin-bottom: 12px;
-  padding-bottom: 54px; /* room for the palms below the space row */
 }
 
 .kb-container--hidden {
@@ -833,104 +831,65 @@ body {
   50% { transform: scale(1.12); }
 }
 
-/* Hands overlay: semi-transparent hands rest on the home row of the real
-   keyboard; the guide finger physically travels to the target key and
-   presses it. Positions/sizes are set inline by keyboard.js from the real
-   key geometry — CSS owns only the look and the motion easing. */
-
-.kb-hands-layer {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 3;
-  opacity: 0;
-  transition: opacity 220ms ease-out;
+.kb-hands {
+  display: flex;
+  justify-content: center;
+  gap: 42px;
+  margin-top: 10px;
 }
 
-.kb-hands-layer--ready {
-  opacity: 1;
+.kb-hand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.kb-hand__fingers {
+  display: flex;
+  gap: 5px;
+  align-items: flex-end;
+  height: 30px;
 }
 
 .kb-finger {
   --finger-color: var(--text-dim);
-  position: absolute;
-  transform-origin: bottom center;
-  /* slight overshoot so the reach reads as a living motion.
-     NOTE: no will-change here — Safari balloons GPU memory per layer. */
-  transition: transform 240ms cubic-bezier(0.25, 0.9, 0.35, 1.18);
-  z-index: 2;
+  width: 9px;
+  border-radius: 5px 5px 2px 2px;
+  background: color-mix(in srgb, var(--finger-color) 30%, var(--bg-elevated));
+  border: 1px solid var(--border);
+  transition: background 100ms ease-out;
 }
 
-.kb-finger--type-p { --finger-color: #f472b6; }
-.kb-finger--type-r { --finger-color: #fbbf24; }
-.kb-finger--type-m { --finger-color: #4ade80; }
-.kb-finger--type-i { --finger-color: #38bdf8; }
-.kb-finger--type-t { --finger-color: #a78bfa; }
-
-.kb-finger__body {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: 100px 100px 8px 8px;
-  background: linear-gradient(180deg, #ecbb92 0%, #dda27a 55%, #cf9068 100%);
-  border: 1px solid rgba(72, 38, 14, 0.45);
-  box-shadow: inset -2px 0 3px rgba(0, 0, 0, 0.12);
-  opacity: 0.55;
-  transition: opacity 160ms ease-out, box-shadow 160ms ease-out;
-}
-
-/* fingernail */
-.kb-finger__body::after {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 58%;
-  height: 9px;
-  border-radius: 50%;
-  background: rgba(255, 243, 228, 0.55);
-}
-
-/* finger-zone color cue on the tip */
-.kb-finger__body::before {
-  content: "";
-  position: absolute;
-  top: -3px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 70%;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--finger-color);
-  opacity: 0.85;
-}
+.kb-finger--p { height: 17px; --finger-color: #f472b6; }
+.kb-finger--r { height: 25px; --finger-color: #fbbf24; }
+.kb-finger--m { height: 29px; --finger-color: #4ade80; }
+.kb-finger--i { height: 25px; --finger-color: #38bdf8; }
+.kb-finger--t { height: 13px; --finger-color: #a78bfa; }
 
 .kb-finger--active {
-  z-index: 4;
+  background: var(--finger-color);
+  border-color: var(--finger-color);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--finger-color) 70%, transparent);
+  animation: kb-finger-tap 0.9s ease-in-out infinite;
 }
 
-.kb-finger--active .kb-finger__body {
-  opacity: 1;
-  outline: 2px solid var(--finger-color); /* glow-free highlight: cheap on WebKit */
-  animation: kb-press 0.7s ease-in-out infinite;
-}
-
-/* the travelling finger repeatedly presses the key under its tip
-   (transform-only: animated filters/shadows are GPU-expensive and can
-   hang weaker machines) */
-@keyframes kb-press {
+@keyframes kb-finger-tap {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(3px); }
+  50% { transform: translateY(-5px); }
 }
 
-.kb-palm {
-  position: absolute;
-  border-radius: 46% 46% 50% 50%;
-  background: linear-gradient(180deg, #e3aa80 0%, #cd9166 100%);
-  border: 1px solid rgba(72, 38, 14, 0.4);
-  opacity: 0.5;
-  z-index: 1;
+.kb-hand__palm {
+  width: 66px;
+  height: 26px;
+  margin-top: 3px;
+  border-radius: 4px 4px 14px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Results screen */
@@ -1190,10 +1149,6 @@ body {
     height: 24px;
     font-size: 0.6rem;
     border-radius: 4px;
-  }
-
-  .kb-container {
-    padding-bottom: 44px;
   }
 
   .kb-rows,
