@@ -8,6 +8,7 @@ window.TG = window.TG || {};
   let currentSession = null;
   let currentRace = null;
   let justUnlockedLevel = null;
+  let promptText = ""; // target text of the drill on screen, for cursor/keyboard hints
 
   const el = {}; // populated in init() with DOM references
 
@@ -106,6 +107,7 @@ window.TG = window.TG || {};
   // ---------- Blind Typing Session ----------
 
   function renderPrompt(text) {
+    promptText = text;
     el.sessionPrompt.innerHTML = "";
     [...text].forEach((ch) => {
       const charSpan = document.createElement("span");
@@ -113,6 +115,18 @@ window.TG = window.TG || {};
       charSpan.textContent = ch;
       el.sessionPrompt.appendChild(charSpan);
     });
+    setCursor(0);
+  }
+
+  // Marks the character the player must type next (spaces included) and
+  // tells the keyboard guide which key/finger that is.
+  function setCursor(index) {
+    const prev = el.sessionPrompt.querySelector(".prompt-char--cursor");
+    if (prev) prev.classList.remove("prompt-char--cursor");
+    const ch = index < promptText.length ? promptText[index] : null;
+    const charSpan = el.sessionPrompt.children[index];
+    if (ch !== null && charSpan) charSpan.classList.add("prompt-char--cursor");
+    TG.keyboard.setNext(ch);
   }
 
   function markPromptChar(index, correct) {
@@ -166,8 +180,10 @@ window.TG = window.TG || {};
       onCharResult({ charIndex, correct, reverted }) {
         if (reverted) {
           revertPromptChar(charIndex);
+          setCursor(charIndex);
         } else {
           markPromptChar(charIndex, correct);
+          setCursor(charIndex + 1);
           currentRace.pulse(correct);
         }
       },
@@ -190,6 +206,7 @@ window.TG = window.TG || {};
     if (currentSession) currentSession.destroy();
     currentSession = null;
     currentRace = null;
+    TG.keyboard.setNext(null);
     renderLevelSelect();
     showScreen("menu");
   }
@@ -199,6 +216,7 @@ window.TG = window.TG || {};
   function finishSession(summary) {
     currentSession = null;
     currentRace = null;
+    TG.keyboard.setNext(null);
     const state = progress.levels[currentLevel.id];
     const prevBestWpm = state.bestWpm;
     const prevBestAccuracy = state.bestAccuracy;
@@ -261,6 +279,8 @@ window.TG = window.TG || {};
     el.sessionLevelLabel = qs("session-level-label");
     el.sessionPrompt = qs("session-prompt");
     el.sessionRace = qs("session-race");
+    el.sessionKeyboard = qs("session-keyboard");
+    el.keyboardToggleBtn = qs("keyboard-toggle-btn");
     el.sessionStatus = qs("session-status");
     el.sessionQuitBtn = qs("session-quit-btn");
     el.hiddenInput = qs("hidden-input");
@@ -292,6 +312,11 @@ window.TG = window.TG || {};
       const enabled = !TG.engine.isSoundEnabled();
       TG.engine.setSoundEnabled(enabled);
       updateSoundToggle();
+    });
+
+    el.keyboardToggleBtn.addEventListener("click", () => {
+      TG.keyboard.setVisible(!TG.keyboard.isVisible());
+      updateKeyboardToggle();
     });
 
     el.resetBtn.addEventListener("click", () => {
@@ -329,12 +354,20 @@ window.TG = window.TG || {};
     el.soundToggleBtn.textContent = enabled ? "🔊 Sound On" : "🔇 Sound Off";
   }
 
+  function updateKeyboardToggle() {
+    el.keyboardToggleBtn.textContent = TG.keyboard.isVisible()
+      ? "⌨️ Hide Keyboard"
+      : "⌨️ Show Keyboard";
+  }
+
   function init(loadedProgress, loadedLevels) {
     progress = loadedProgress;
     levels = loadedLevels;
     cacheDom();
     wireEvents();
+    TG.keyboard.init(el.sessionKeyboard);
     updateSoundToggle();
+    updateKeyboardToggle();
     renderLevelSelect();
     showScreen("menu");
   }
