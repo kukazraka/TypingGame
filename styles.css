@@ -857,6 +857,7 @@ body {
   transform-origin: bottom center;
   /* slight overshoot so the reach reads as a living motion */
   transition: transform 240ms cubic-bezier(0.25, 0.9, 0.35, 1.18);
+  will-change: transform; /* keep on its own GPU layer; avoids repaint storms */
   z-index: 2;
 }
 
@@ -917,10 +918,12 @@ body {
   animation: kb-press 0.7s ease-in-out infinite;
 }
 
-/* the travelling finger repeatedly presses the key under its tip */
+/* the travelling finger repeatedly presses the key under its tip
+   (transform-only: animated filters/shadows are GPU-expensive and can
+   hang weaker machines) */
 @keyframes kb-press {
-  0%, 100% { transform: translateY(0); filter: brightness(1); }
-  50% { transform: translateY(3px); filter: brightness(1.18); }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
 }
 
 .kb-palm {
